@@ -10,7 +10,7 @@ what's my input:
 query
 DataDir:
     qid_term
-    qid_TermTopicProb
+    qid_TermTopicProb (also prepare one for Van's TermLevel Method)
 what's my output:
     qid_DocTopicProb:
         DocNo\t p1,p2,p3,p4
