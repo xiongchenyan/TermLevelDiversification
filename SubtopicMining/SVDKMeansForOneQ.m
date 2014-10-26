@@ -3,6 +3,11 @@ function flag = SVDKMeansForOneQ(InName,OutName,k,ReducedDim )
 
 InData = csvread(InName);
 X=spconvert(InData);
+dim = max(size(X,1),size(X,2));
+M = zeros(dim,dim);
+M(1:size(X,1),1:size(X,2)) = M(1:size(X,1),1:size(X,2)) + X;
+M(1:size(X,2),1:size(X,1)) = M(1:size(X,2),1:size(X,1)) + X';
+X=M;
 fprintf('read data [%d][%d]\n',size(X,1),size(X,2));
 [U,S,V] = svd(X);
 M=U(:,1:ReducedDim);
