@@ -15,7 +15,7 @@ fprintf('reduced to [%d][%d]\n',size(M,1),size(M,2));
 [idx,C,sumd,D]=kmeans(M,k,'emptyaction','singleton');
 
 D = D ./(D* ones(size(D,2),1) * ones(1,size(D,2)));
-csvwrite(D,OutName);
+csvwrite(OutName,D);
 flag=  1;
 end
 
