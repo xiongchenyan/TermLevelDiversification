@@ -60,7 +60,7 @@ class WordCooccurGeneratorC(cxBaseC):
         for doc in lDoc:
             lTermPair = self.GenerateTermPairForDoc(doc)
             hTermCooccur,lTerm = self.UpdateDataWithPairs(lTermPair,hTermCooccur,lTerm)
-            
+            del lTermPair[:]
         return hTermCooccur,lTerm
     
     
@@ -108,6 +108,7 @@ class WordCooccurGeneratorC(cxBaseC):
                 hTermCooccur[Key] = 1
             else:
                 hTermCooccur[Key] += 1
+        print 'current term num [%d] pair [%d]' %(len(lTerm),len(hTermCooccur))
         return hTermCooccur,lTerm
     
     def ProcessOneQ(self,qid,query):
@@ -122,7 +123,8 @@ class WordCooccurGeneratorC(cxBaseC):
         for key,value in hTermCooccur.items():
             print >> OccurOut,key + ',%d' %(value)
         OccurOut.close()
-        
+        del hTermCooccur[:]
+        del lTerm[:]
         return
     
     
