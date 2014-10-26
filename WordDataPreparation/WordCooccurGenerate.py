@@ -59,7 +59,7 @@ class WordCooccurGeneratorC(cxBaseC):
         
         for doc in lDoc:
             lTermPair = self.GenerateTermPairForDoc(doc)
-            hTermCooccur,lTerm = self.UpdateDataWithTriples(lTermPair,hTermCooccur,lTerm)
+            hTermCooccur,lTerm = self.UpdateDataWithPairs(lTermPair,hTermCooccur,lTerm)
             
         return hTermCooccur,lTerm
     
@@ -84,7 +84,7 @@ class WordCooccurGeneratorC(cxBaseC):
             
         return lPair
     
-    def UpdataDataWithTriples(self,lTermPair,hTermCooccur,lTerm):
+    def UpdateDataWithPairs(self,lTermPair,hTermCooccur,lTerm):
         '''
         update the hash ids and the term cooccur cnt
         '''
