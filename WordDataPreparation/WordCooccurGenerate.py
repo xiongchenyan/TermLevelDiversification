@@ -94,6 +94,9 @@ class WordCooccurGeneratorC(cxBaseC):
             pb = int(pb) - 1
             lTermCnt[pa] += value
             lTermCnt[pb] += value
+        
+        l = sorted(lTermCnt,reverse = True)
+        self.MinTF = max(self.MinTF,l[1000])
             
         hTermStrCooc = {}
         lNewTerm = []
