@@ -31,7 +31,8 @@ class WordCooccurGeneratorC(cxBaseC):
         self.CacheDir = ""
         self.QIn = ""
         self.OutDir = ""
-        
+        self.MinPairCnt = 10
+        self.MinTF = 100
         
     @staticmethod
     def ShowConf():
@@ -68,8 +69,8 @@ class WordCooccurGeneratorC(cxBaseC):
     def TermPairFilter(self,hTermCooccur,lTerm):
         '''
         filter term pairs and terms to speed up
-        discard term that tf < 5
-        discard term pair that cnt < 2
+        discard term that tf < 100
+        discard term pair that cnt < 10
         '''
         hNewCooc = self.DiscardTermPairByCnt(hTermCooccur)
         hNewCooc,lNewTerm = self.DiscardTermByTF(hNewCooc, lTerm)
@@ -81,7 +82,7 @@ class WordCooccurGeneratorC(cxBaseC):
     def DiscardTermPairByCnt(self,hTermCooccur):
         hNewTermCooc = {}
         for key,value in hTermCooccur.items():
-            if value > 1:
+            if value >= self.MinPairCnt:
                 hNewTermCooc[key] = value
         return hNewTermCooc
     
@@ -99,7 +100,7 @@ class WordCooccurGeneratorC(cxBaseC):
         
         #put term pairs that should be kept in h and l
         for i in range(len(lTerm)):
-            if lTermCnt[i] < 5:
+            if lTermCnt[i] < self.MinTF:
                 continue
             lNewTerm.append(lTerm[i])
         for key,value in hTermCooccur.items():
