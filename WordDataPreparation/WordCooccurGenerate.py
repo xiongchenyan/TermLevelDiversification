@@ -15,7 +15,6 @@ for each query, two files:
 '''
 
 import site
-from IndriRelate.IndriPackedRes import ReadPackedIndriRes
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 import os
 from cxBase.base import cxBaseC
