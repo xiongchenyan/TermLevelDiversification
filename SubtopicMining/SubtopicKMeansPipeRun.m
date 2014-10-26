@@ -16,7 +16,7 @@ for qid=1:200
     WordvecOutName =  strcat(WordvecInName,'_kmeans');    
 %    KMeansForOneQ(RawCoocInName,RawKmeansOutName,k);
     fprintf('kmeans done\n');
-    SVDKmeansForOneQ(RawCoocInName,SVDKmeansOutName,k,DimReduce);
+    SVDKMeansForOneQ(RawCoocInName,SVDKmeansOutName,k,DimReduce);
     fprintf('svd kmeans done\n');
  %   Word2vecKMeans(WordvecInName,WordvecOutName,k);
  %   fprintf('wordvec kmeans done\n');
