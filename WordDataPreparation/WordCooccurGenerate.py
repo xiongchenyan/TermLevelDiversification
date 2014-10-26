@@ -61,7 +61,59 @@ class WordCooccurGeneratorC(cxBaseC):
             lTermPair = self.GenerateTermPairForDoc(doc)
             hTermCooccur,lTerm = self.UpdateDataWithPairs(lTermPair,hTermCooccur,lTerm)
             del lTermPair[:]
+        hTermCooccur,lTerm = self.TermPairFilter(hTermCooccur, lTerm)
         return hTermCooccur,lTerm
+    
+    
+    def TermPairFilter(self,hTermCooccur,lTerm):
+        '''
+        filter term pairs and terms to speed up
+        discard term that tf < 5
+        discard term pair that cnt < 2
+        '''
+        hNewCooc = self.DiscardTermPairByCnt(hTermCooccur)
+        hNewCooc,lNewTerm = self.DiscardTermByTF(hNewCooc, lTerm)
+        
+        print "after filters [%d]-> [%d] term, [%d]->[%d] pair" %(len(lTerm),len(lNewTerm),len(hTermCooccur),len(hNewCooc))
+        return hNewCooc,lNewTerm
+    
+    
+    def DiscardTermPairByCnt(self,hTermCooccur):
+        hNewTermCooc = {}
+        for key,value in hTermCooccur.items():
+            if value > 1:
+                hNewTermCooc[key] = value
+        return hNewTermCooc
+    
+    def DiscardTermByTF(self,hTermCooccur,lTerm):
+        lTermCnt = [0] * len(lTerm)
+        for key,value in hTermCooccur.items():
+            pa,pb = key.split(',')
+            pa = int(pa) - 1
+            pb = int(pb) - 1
+            lTermCnt[pa] += value
+            lTermCnt[pb] += value
+            
+        hTermStrCooc = {}
+        lNewTerm = []
+        
+        #put term pairs that should be kept in h and l
+        for i in range(len(lTerm)):
+            if lTermCnt[i] < 5:
+                continue
+            lNewTerm.append(lTerm[i])
+        for key,value in hTermCooccur.items():
+            pa,pb = key.split(',')
+            pa = int(pa) - 1
+            pb = int(pb) - 1
+            ta = lTerm[pa]
+            tb = lTerm[pb]
+            if (ta in lNewTerm) & (tb in lNewTerm):
+                NewPa = lNewTerm.index(ta) + 1
+                NewPb = lNewTerm.index(tb)  + 1
+                NewKey = str(NewPa) + ',' + str(NewPb)
+                hTermStrCooc[NewKey] = value
+        return hTermStrCooc,lNewTerm
     
     
     def GenerateTermPairForDoc(self,doc):
@@ -115,7 +167,7 @@ class WordCooccurGeneratorC(cxBaseC):
         print "start processing [%s][%s]" %(qid,query)
         hTermCooccur,lTerm = self.GenerateForOneQ(query)
         
-        TermIdOut = open(self.OutDir + '/%s_term' %(qid))
+        TermIdOut = open(self.OutDir + '/%s_term' %(qid),'w')
         print >> TermIdOut, '\n'.join(lTerm)
         print "get [%d] terms from SERP" %(len(lTerm))
         TermIdOut.close()
