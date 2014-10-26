@@ -65,6 +65,7 @@ class WordCooccurGeneratorC(cxBaseC):
     
     
     def GenerateTermPairForDoc(self,doc):
+        
         text = doc.GetContent()
         text = TextBaseC.RawClean(text)
         lTermSeq = text.split(' ')
@@ -81,7 +82,7 @@ class WordCooccurGeneratorC(cxBaseC):
             lCurrentTerm.append(term)
             if len(lCurrentTerm) > SlidingSize:
                 del lCurrentTerm[0]
-            
+        print "Get [%d] term pairs from doc [%s]" %(len(lPair),doc.DocNo)    
         return lPair
     
     def UpdateDataWithPairs(self,lTermPair,hTermCooccur,lTerm):
@@ -110,10 +111,12 @@ class WordCooccurGeneratorC(cxBaseC):
         return hTermCooccur,lTerm
     
     def ProcessOneQ(self,qid,query):
+        print "start processing [%s][%s]" %(qid,query)
         hTermCooccur,lTerm = self.GenerateForOneQ(query)
         
         TermIdOut = open(self.OutDir + '/%s_term' %(qid))
         print >> TermIdOut, '\n'.join(lTerm)
+        print "get [%d] terms from SERP" %(len(lTerm))
         TermIdOut.close()
         OccurOut = open(self.OutDir + '%s_occur' %(qid))
         for key,value in hTermCooccur.items():
