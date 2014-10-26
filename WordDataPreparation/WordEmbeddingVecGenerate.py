@@ -67,7 +67,7 @@ class WordEmbeddingVecGeneratorC(cxBaseC):
         for line in open(InName):
             cnt += 1
             term = line.strip()
-            p = lTerm.Index(term)
+            p = lTerm.index(term)
             Vector = lWord2Vec[p]
             Mids = Vector.dumps()
             EmbeddingStr = Mids.split('\t')[1].replace(' ',',')
