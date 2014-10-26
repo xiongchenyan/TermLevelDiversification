@@ -18,8 +18,8 @@ for qid=1:200
     fprintf('kmeans done\n');
     SVDKmeansForOneQ(RawCoocInName,SVDKmeansOutName,k,DimReduce);
     fprintf('svd kmeans done\n');
-    Word2vecKMeans(WordvecInName,WordvecOutName,k);
-    fprintf('wordvec kmeans done\n');
+ %   Word2vecKMeans(WordvecInName,WordvecOutName,k);
+ %   fprintf('wordvec kmeans done\n');
 end
 flag = 1;
 return
