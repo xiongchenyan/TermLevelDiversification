@@ -175,7 +175,8 @@ class WordCooccurGeneratorC(cxBaseC):
         for key,value in hTermCooccur.items():
             print >> OccurOut,key + ',%d' %(value)
         OccurOut.close()
-        del hTermCooccur[:]
+
+        del hTermCooccur
         del lTerm[:]
         return
     
