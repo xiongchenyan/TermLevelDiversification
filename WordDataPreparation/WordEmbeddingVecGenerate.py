@@ -53,7 +53,7 @@ class WordEmbeddingVecGeneratorC(cxBaseC):
                 hTerm[line.strip()] = ""
                 
                 
-        return hTerm.key()
+        return hTerm.keys()
     
     
     def DumpMtxForOneQ(self,qid,lTerm,lWord2Vec):
