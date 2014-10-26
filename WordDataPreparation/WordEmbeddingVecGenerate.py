@@ -61,20 +61,30 @@ class WordEmbeddingVecGeneratorC(cxBaseC):
         OutName = self.DataDir + '%d_word2vec' %(qid)
         
         out = open(OutName,'w')
+        OutInTerm = open(OutName + '_term','w')
+        cnt = 0
+        InCnt = 0
         for line in open(InName):
+            cnt += 1
             term = line.strip()
             p = lTerm.Index(term)
             Vector = lWord2Vec[p]
             Mids = Vector.dumps()
             EmbeddingStr = Mids.split('\t')[1].replace(' ',',')
-            print >>out,EmbeddingStr
+            if not Vector.IsEmpty():           
+                print >>out,EmbeddingStr
+                print >>OutInTerm,term
+                InCnt += 1
         
         out.close()
-        print '[%d] finished' %(qid)
+        OutInTerm.close()
+        print '[%d] query finished [%d]/[%d] in' %(qid,InCnt,cnt)
         return
     
     def Process(self):
+        print "start to read terms"
         lAllTerm = self.ReadAllTerm()
+        print 'get total [%d] terms' %(len(lAllTerm))
         lWord2Vec = WordVecBatchFetcher(lAllTerm, self.Word2vecIn)
         
         for qid in range(1,201):
