@@ -36,7 +36,7 @@ class WordCooccurGeneratorC(cxBaseC):
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print "cachedir\nin\nout\ntopdocn\nuwsize\n"
+        print "cachedir\nin\noutdir\ntopdocn\nuwsize\n"
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
@@ -44,7 +44,7 @@ class WordCooccurGeneratorC(cxBaseC):
         self.TopDocN = int(self.conf.GetConf('topdocn', self.TopDocN))
         self.CacheDir = self.conf.GetConf('cachedir') + '/'
         self.QIn = self.conf.GetConf('in')
-        self.OutDir = self.conf.GetConf('out')
+        self.OutDir = self.conf.GetConf('outdir')
         
         
         
