@@ -44,7 +44,7 @@ class WordCooccurGeneratorC(cxBaseC):
         self.TopDocN = int(self.conf.GetConf('topdocn', self.TopDocN))
         self.CacheDir = self.conf.GetConf('cachedir') + '/'
         self.QIn = self.conf.GetConf('in')
-        self.OutDir = self.conf.GetConf('outdir')
+        self.OutDir = self.conf.GetConf('outdir') + '/'
         
         
         
@@ -171,7 +171,7 @@ class WordCooccurGeneratorC(cxBaseC):
         print >> TermIdOut, '\n'.join(lTerm)
         print "get [%d] terms from SERP" %(len(lTerm))
         TermIdOut.close()
-        OccurOut = open(self.OutDir + '%s_occur' %(qid))
+        OccurOut = open(self.OutDir + '%s_occur' %(qid),'w')
         for key,value in hTermCooccur.items():
             print >> OccurOut,key + ',%d' %(value)
         OccurOut.close()
