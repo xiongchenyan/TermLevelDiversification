@@ -10,6 +10,8 @@ M(1:size(X,2),1:size(X,1)) = M(1:size(X,2),1:size(X,1)) + X';
 X=M;
 fprintf('read data [%d][%d]\n',size(X,1),size(X,2));
 [U,S,V] = svd(X);
+
+ReducedDim = min(ReducedDim,size(U,2));
 M=U(:,1:ReducedDim);
 fprintf('reduced to [%d][%d]\n',size(M,1),size(M,2));
 [idx,C,sumd,D]=kmeans(M,k,'emptyaction','singleton');
