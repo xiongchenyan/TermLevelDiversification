@@ -73,11 +73,20 @@ class DocTopicDistributionCalculatorC(cxBaseC):
             
         for line in open(TermProbIn):
             line = line.strip()
-            lProb = [float(item) for item in line.split(',')]
+            lDis = [float(item) for item in line.split(',')]           
+            lProb = self.TransferDistanceToProb(lDis)
             Vector = VectorC(lProb)
             lTermVector.append(Vector)
             
         return lTerm,lTermVector
+    
+    
+    def TransferDistanceToProb(self,lDis):
+        lInvert = [1.0 / max(dis,0.0001) for dis in lDis]
+        Total = sum(lInvert)
+        lProb = [Inv/Total for Inv in lInvert]
+        return lProb
+        
     
     def CalcDocTopicProb(self,doc,lTerm,lTermVector):
         '''
