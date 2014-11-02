@@ -6,7 +6,7 @@ function flag = SubtopicKMeansPipeRun(DataDir)
     % cluster word2vec matrix
 
 k = 10;
-DimReduce = 300;
+DimReduce = 50;
 for qid=1:200
     fprintf('start clustering [%d]\n',qid);
     RawCoocInName = strcat(DataDir,'/',int2str(qid),'_occur');

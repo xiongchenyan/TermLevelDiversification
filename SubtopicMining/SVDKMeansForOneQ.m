@@ -18,6 +18,8 @@ fprintf('reduced to [%d][%d]\n',size(M,1),size(M,2));
 
 D = D ./(D* ones(size(D,2),1) * ones(1,size(D,2)));
 csvwrite(OutName,D);
+csvwrite(strcat(OutName,'_center'),C);
+csvwrite(strcat(Outname,'_idx'),idx);
 flag=  1;
 end
 
