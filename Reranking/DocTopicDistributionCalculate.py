@@ -88,7 +88,7 @@ class DocTopicDistributionCalculatorC(cxBaseC):
             if not term in lTerm:
                 continue
             ptdoc = lm.GetTFProb(term)
-            TermVec = lTermVector[lTerm.Index(term)]
+            TermVec = lTermVector[lTerm.index(term)]
             DocProb = DocProb + TermVec * ptdoc
         return DocProb
     
