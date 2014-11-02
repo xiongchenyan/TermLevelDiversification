@@ -42,7 +42,7 @@ class DocTopicDistributionCalculatorC(cxBaseC):
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print "cachedir\ntopdocn\ndatadir\nin"
+        print "cachedir\ntopdocn\ndatadir\nin\ntermtopicsuf"
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
@@ -50,7 +50,7 @@ class DocTopicDistributionCalculatorC(cxBaseC):
         self.CacheDir = self.conf.GetConf('cachedir') + '/'
         self.TopDocN = int(self.conf.GetConf('topdocn', self.TopDocN))
         self.QIn = self.conf.GetConf('in')
-        self.TermTopicSuf = self.conf.GetConf('termtopicSuf')
+        self.TermTopicSuf = self.conf.GetConf('termtopicsuf')
         
         
     def ReadTermProbVectorForOneQ(self,qid):
