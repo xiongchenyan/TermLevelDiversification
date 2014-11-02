@@ -97,7 +97,7 @@ class DocTopicDistributionCalculatorC(cxBaseC):
         qid = int(qid)
         lTerm,lTermVector = self.ReadTermProbVectorForOneQ(qid)
         
-        out = open("%d_DocTopicProb" %(qid),'w')
+        out = open("%d_%s_DocTopicProb" %(qid,self.TermTopicSuf),'w')
         
         for doc in lDoc:
             DocProb = self.CalcDocTopicProb(doc, lTerm, lTermVector)
