@@ -37,6 +37,8 @@ class DocTopicDistributionCalculatorC(cxBaseC):
         self.DataDir = ""
         self.CacheDir = ""
         self.TopDocN = 100
+        self.TermSuf = 'term'
+        self.TermTopicSuf = 'occur_kmeans'
         
         
     @staticmethod
@@ -50,7 +52,8 @@ class DocTopicDistributionCalculatorC(cxBaseC):
         self.CacheDir = self.conf.GetConf('cachedir') + '/'
         self.TopDocN = int(self.conf.GetConf('topdocn', self.TopDocN))
         self.QIn = self.conf.GetConf('in')
-        self.TermTopicSuf = self.conf.GetConf('termtopicsuf')
+        self.TermTopicSuf = self.conf.GetConf('termtopicsuf',self.TermTopicSuf)
+        self.TermSuf = self.conf.GetConf('termsuf', self.TermSuf)
         
         
     def ReadTermProbVectorForOneQ(self,qid):
