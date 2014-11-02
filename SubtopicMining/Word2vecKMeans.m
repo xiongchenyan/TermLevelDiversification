@@ -7,7 +7,7 @@ fprintf('read data [%d][%d]\n',size(X,1),size(X,2));
 D = D ./(D* ones(size(D,2),1) * ones(1,size(D,2)));
 csvwrite(OutName,D);
 csvwrite(strcat(OutName,'_center'),C);
-csvwrite(strcat(Outname,'_idx'),idx);
+csvwrite(strcat(OutName,'_idx'),idx);
 flag=  1;
 
 
