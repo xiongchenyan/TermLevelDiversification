@@ -65,7 +65,7 @@ class DocTopicDistributionCalculatorC(cxBaseC):
         lTermVector = []
         
         
-        TermIn = self.DataDir  + '%d_term' %(qid)
+        TermIn = self.DataDir  + '%d_%s' %(qid,self.TermSuf)
         TermProbIn = self.DataDir + '%d_%s' %(qid,self.TermTopicSuf)
         
         for line in open(TermIn):
