@@ -35,31 +35,52 @@ class DiversifiedRerankC(cxBaseC):
         self.QIn = ""
         self.CacheDir = ""
         self.TopDocN = 100
+        self.Lambda = 0.5
+        self.NumOfSt = 0
+        self.DocProbNamePre = ""
+        self.OutName = ""
         
         
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print "datadir\nin\ncachedir\ntopdocn"
+        print "datadir\nin\nout\ncachedir\ntopdocn\nlambda\ndocprobpre"
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
         self.DataDir = self.conf.GetConf('datadir') + '/'
-        self.QIn = self.conf.GetConf('qin')
+        self.QIn = self.conf.GetConf('in')
+        self.OutName = self.conf.GetConf('out')
         self.CacheDir = self.conf.GetConf('cachedir') + '/'
         self.TopDocN = self.conf.GetConf('topdocn')
-        
+        self.Lambda = float(self.conf.GetConf('lambda', self.Lambda))
+        self.DocProbNamePre = self.conf.GetConf('docprobpre')
+    
+    
+    def Process(self):
+        out = open(self.OutName,'w')
+        for line in open(self.QIn):
+            qid,query = line.strip().split('\t')
+            qid = int(qid)
+            lDocNo,lDocScore = self.ProcessOneQ(qid, query)
+            for i in range(len(lDocNo)):
+                print >> out,"%d 0 %s %f div" %(qid,lDocNo[i],lDocScore[i])
+            print "[%d][%s] ranked" %(qid,query)
+        out.close()     
+        return
+    
+    
         
     def ProcessOneQ(self,qid,query):
         lDoc = ReadPackedIndriRes(self.CacheDir + query, self.TopDocN)
         lDocNo = [doc.DocNo for doc in lDoc]        
         lDocProbVec = self.ReadDocProbVec(lDocNo, qid)        
-        lReRankedDocNo = self.RerankForOneQ(qid,query,lDoc,lDocProbVec)        
-        return lReRankedDocNo
+        lReRankedDocNo,lDocScore = self.RerankForOneQ(qid,query,lDoc,lDocProbVec)        
+        return lReRankedDocNo,lDocScore
             
     def ReadDocProbVec(self,lDocNo,qid):
         lDocProbVec = [] * len(lDocNo)
-        for line in open(self.DataDir + '%d_DocTopicProb' %(qid)):
+        for line in open(self.DataDir + '%d_%s_DocTopicProb' %(qid,self.DocProbNamePre)):
             DocNo,VecStr = line.strip().split('\t')
             Vector = VectorC()
             Vector.loads(VecStr)
@@ -73,3 +94,4 @@ class DiversifiedRerankC(cxBaseC):
         to be implemented by subclass: xQuAd, PM-2
         '''
         print 'call my sub class'
+        
