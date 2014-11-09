@@ -79,7 +79,7 @@ class DiversifiedRerankC(cxBaseC):
         return lReRankedDocNo,lDocScore
             
     def ReadDocProbVec(self,lDocNo,qid):
-        lDocProbVec = [] * len(lDocNo)
+        lDocProbVec = [VectorC()] * len(lDocNo)
         for line in open(self.DataDir + '%d_%s_DocTopicProb' %(qid,self.DocProbNamePre)):
             DocNo,VecStr = line.strip().split('\t')
             Vector = VectorC()
