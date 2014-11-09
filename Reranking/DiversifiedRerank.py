@@ -64,7 +64,7 @@ class DiversifiedRerankC(cxBaseC):
             qid = int(qid)
             lDocNo,lDocScore = self.ProcessOneQ(qid, query)
             for i in range(len(lDocNo)):
-                print >> out,"%d 0 %s %f div" %(qid,lDocNo[i],lDocScore[i])
+                print >> out,"%d Q0 %s %d %f div" %(qid,lDocNo[i],i + 1,lDocScore[i])
             print "[%d][%s] ranked" %(qid,query)
         out.close()     
         return
