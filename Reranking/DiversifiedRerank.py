@@ -84,7 +84,7 @@ class DiversifiedRerankC(cxBaseC):
             DocNo,VecStr = line.strip().split('\t')
             Vector = VectorC()
             Vector.loads(VecStr)
-            p = lDocNo.Index(DocNo)
+            p = lDocNo.index(DocNo)
             lDocProbVec[p] = Vector   
         return lDocProbVec
 
