@@ -61,8 +61,8 @@ class xQuAdRerankerC(DiversifiedRerankC):
             key = int(key)
             res += self.Lambda * lUnsatisfy[key] * value
         return res
-    
-    def UndateUnsatisfy(self,DocProbVec,lUnsatisfy):
+        
+    def UpdateUnsatisfy(self,DocProbVec,lUnsatisfy):
         for i in range(len(lUnsatisfy)):
             score = DocProbVec.GetDim(str(i))
             lUnsatisfy[i] *= 1 - score
