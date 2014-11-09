@@ -14,6 +14,7 @@ what's my output:
 
 import site
 
+site.addsitedir('/bos/usr0/cx/PyCode/TermLevelDiversification')
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 from cxBase.base import cxBaseC
 from cxBase.Conf import cxConfC

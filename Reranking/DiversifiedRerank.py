@@ -15,7 +15,7 @@ a new rank of document
 
 
 import site
-
+site.addsitedir('/bos/usr0/cx/PyCode/TermLevelDiversification')
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 import os
 from cxBase.base import cxBaseC
