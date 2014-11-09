@@ -24,7 +24,7 @@ from IndriRelate.IndriPackedRes import *
 from IndriRelate.IndriInferencer import *
 from cxBase.TextBase import TextBaseC
 from cxBase.Vector import VectorC
-from Reranking.DocTopicDistributionCalculate import DocTopicDistributionCalculatorC
+# from Reranking.DocTopicDistributionCalculate import DocTopicDistributionCalculatorC
 
 
 class DiversifiedRerankC(cxBaseC):
