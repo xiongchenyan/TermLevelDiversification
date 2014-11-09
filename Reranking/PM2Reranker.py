@@ -67,7 +67,7 @@ class PM2RerankerC(DiversifiedRerankC):
             res += mid * lUnsatisfy[key] * value
         return res
     
-    def UndateUnsatisfy(self,DocProbVec,lUnsatisfy):
+    def UpdateUnsatisfy(self,DocProbVec,lUnsatisfy):
         if [] == lUnsatisfy:
             return
         SumTopProb = sum(DocProbVec.hDim.values())
