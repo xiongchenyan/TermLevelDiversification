@@ -26,6 +26,7 @@ import sys
 if len(sys.argv) != 2:
     DiversifiedRerankC.ShowConf()
     print "model xquad|pm2"
+    sys.exit()
 
 conf = cxConfC(sys.argv[1])
 model = conf.GetConf('model')
