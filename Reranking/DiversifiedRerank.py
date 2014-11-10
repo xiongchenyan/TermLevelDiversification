@@ -35,7 +35,7 @@ class DiversifiedRerankC(cxBaseC):
         self.QIn = ""
         self.CacheDir = ""
         self.TopDocN = 100
-        self.Lambda = 0.5
+        self.Lambda = 0.15
         self.NumOfSt = 0
         self.DocProbNamePre = ""
         self.OutName = ""
@@ -44,7 +44,7 @@ class DiversifiedRerankC(cxBaseC):
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print "datadir\nin\nout\ncachedir\ntopdocn\nlambda\ndocprobpre"
+        print "datadir\nin\nout\ncachedir\ntopdocn\nlambda\ndocprobpre\nlambda"
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
