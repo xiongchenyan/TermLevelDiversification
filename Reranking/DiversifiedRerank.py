@@ -52,7 +52,7 @@ class DiversifiedRerankC(cxBaseC):
         self.QIn = self.conf.GetConf('in')
         self.OutName = self.conf.GetConf('out')
         self.CacheDir = self.conf.GetConf('cachedir') + '/'
-        self.TopDocN = self.conf.GetConf('topdocn')
+        self.TopDocN = int(self.conf.GetConf('topdocn'))
         self.Lambda = float(self.conf.GetConf('lambda', self.Lambda))
         self.DocProbNamePre = self.conf.GetConf('docprobpre')
     

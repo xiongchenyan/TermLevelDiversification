@@ -40,7 +40,7 @@ class PM2RerankerC(DiversifiedRerankC):
             lDocScore.append(score)
             lUnsatisfy = self.UpdateUnsatisfy(lDocProbVec[NextP],lUnsatisfy)
         
-        return lRerankDocNo
+        return lRerankDocNo,lDocScore
     
     def SelectNextBest(self,lDoc,lDocProbVec,lUnsatisfy,lRerankDocNo):
         MaxScore = -1
