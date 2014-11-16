@@ -31,8 +31,8 @@ class WordCooccurGeneratorC(cxBaseC):
         self.CacheDir = ""
         self.QIn = ""
         self.OutDir = ""
-        self.MinPairCnt = 10
-        self.MinTF = 100
+        self.MinPairCnt = 0
+        self.MinTF = 10
         
     @staticmethod
     def ShowConf():
@@ -120,18 +120,27 @@ class WordCooccurGeneratorC(cxBaseC):
         return hTermStrCooc,lNewTerm
     
     
+    def FilterTerm(self,term):
+        if len(term) < 2:
+            return True
+        if TextBaseC.DiscardNonAlpha(term) == "":
+            return True
+        return False
+    
     def GenerateTermPairForDoc(self,doc):
         
         text = doc.GetContent()
         text = TextBaseC.RawClean(text)
         lTermSeq = text.split(' ')
         
-        SlidingSize = self.UWSize / 2
+        SlidingSize = self.UWSize
         
         lCurrentTerm = []
         lPair = []
         
         for term in lTermSeq:
+            if self.FilterTerm(term):
+                continue
             if [] != lCurrentTerm:
                 for PreTerm in lCurrentTerm:
                     lPair.append([PreTerm,term])
