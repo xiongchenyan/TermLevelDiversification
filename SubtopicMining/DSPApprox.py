@@ -31,6 +31,7 @@ class DSPApproxC(cxBaseC):
         self.WordDataDir = ""
         self.QIn = ""
         self.TopicTermOut = ""
+        self.DataSuf = ""
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
@@ -50,10 +51,10 @@ class DSPApproxC(cxBaseC):
         
         
     
-    def GenerateTopTerms(self,query,lDoc):
+    def GenerateTopicTerms(self,qid,query,lDoc):
         #query need to be stemmed
         hTopicTerm = {}   #term -> topicality
-        
+        lTermSet = open(self.WordDataDir + '%s_term' %(qid)).read().split('\n')
         
         lQTerm = query.split()
         
@@ -62,7 +63,8 @@ class DSPApproxC(cxBaseC):
             lQIndicex = [i for i,term in enumerate(lDocTerm) if term in lQTerm]
             for indice in lQIndicex:
                 lTerm = lDocTerm[max(0,indice-self.UWSize):indice + self.UWSize]
-                hTopicTerm.update(dict(zip(lTerm,[0]*len(lTerm))))
+                lTargetTerm = [term for term in lTerm if term in lTermSet]
+                hTopicTerm.update(dict(zip(lTargetTerm,[0]*len(lTargetTerm))))
                 
         #calc topicality
         for doc in lDoc:
@@ -81,6 +83,7 @@ class DSPApproxC(cxBaseC):
     
     def LoadOccurMatrix(self,qid,query,hTopicTerm):
         hTopicTermPreProb = {}   #topic term -> hPred[term]->p(t|v)
+        hPredictiveness = {}   #term->sum of hPred[term]
         #all read from disk
         
         '''
@@ -89,12 +92,12 @@ class DSPApproxC(cxBaseC):
             (normalize by column) (row indices use term, column just ids)
         for each topic term, sum it up (normalized with vocabulary size)
         '''
-        TermInName = self.WordDataDir + '%d_term' %(qid)
-        CoocInName = self.WordDataDir + '%d_occur' %(qid)
+        TermInName = self.WordDataDir + '%d%s_term' %(self.DataSuf,qid)
+        CoocInName = self.WordDataDir + '%d%s_occur' %(self.DataSuf,qid)
         
         lVocabulary = open(TermInName).read().split('\n')
         lColSum = [0] * len(lVocabulary)
-        for line in open(TermInName):
+        for line in open(CoocInName):
             p,q,value = line.strip().split(',')
             p = int(p)
             q = int(q)
@@ -109,24 +112,46 @@ class DSPApproxC(cxBaseC):
                     hTopicTermPreProb[term][q] = value
                 else:
                     hTopicTermPreProb[term][q] += value
+        
+        hPredictiveness = dict(zip(hTopicTermPreProb.keys(),[0]*len(hTopicTermPreProb)))
                     
         for term in hTopicTermPreProb.keys():
             for q in hTopicTermPreProb[term].keys():
                 hTopicTermPreProb[term][q] /= float(lColSum[q - 1])
-        return hTopicTermPreProb,lVocabulary
+                hPredictiveness[term] += hTopicTermPreProb[term][q] / float(len(lVocabulary))
+        
+        hVocabulary = dict(zip(lVocabulary,range(len(lVocabulary))))        
+        return hTopicTermPreProb,hPredictiveness,hVocabulary
     
     
     def ProcessOneQ(self,qid,query):
+        '''
+        read and make topic terms
+        read and make predictiveness
+        select terms greedly
+            pick current best
+            update predictiveness and covered terms
+        '''
+        
         lTopicTermWeight = []  #(term,weight)
-        lVocabularty = []
-        hTopicTerm = {}
-        hPredictiveness = {}
-        hTopicTermPreProb = {}
         lCoveredTerm = []
         
+        lDoc = ReadPackedIndriRes(self.CacheDir + '/' + query, self.TopDocN)
         
+        hTopicTerm = self.GenerateTopicTerms(qid,query, lDoc)
+        hTopicTermPreProb,hPredictiveness,hVocabularty = self.LoadOccurMatrix(qid, query, hTopicTerm)
+        
+        while hTopicTerm != {}:
+            BestTerm,score = self.CalcCurrentBest(hTopicTerm, hPredictiveness)
+            lTopicTermWeight.append([BestTerm,score])
+            del hTopicTerm[BestTerm]
+            hPreProb = hTopicTermPreProb[BestTerm]
+            hPredictiveness = self.UpdatePredictiveness(hPreProb, lCoveredTerm, hPredictiveness, hTopicTermPreProb,hVocabularty)
+            lCoveredTerm = self.UpdateCovedTerm(hPreProb, lCoveredTerm)
+            print "current best [%s][%f]" %(BestTerm,score)
         
         return lTopicTermWeight
+    
         
     
     def CalcCurrentBest(self,hTopicTerm,hPredictiveness):
@@ -141,20 +166,41 @@ class DSPApproxC(cxBaseC):
         
         return BestTerm,score
     
-    def UpdatePredictiveness(self,hPreProb,lCoveredTerm,hPredictiveness,hTopicTermPreProb):
+    def UpdatePredictiveness(self,hPreProb,lCoveredTerm,hPredictiveness,hTopicTermPreProb,hVocabulary):
+        '''
+        get newly covered terms (in hPreProb, not in lCoveredTerm)
+        for each term in hPredictiveness, minus \sum p(term|v) for all v in newly covered terms
+        '''
         
+        lNewCover = [key for key in hPreProb.keys() if not key in lCoveredTerm]
+        Z = float(len(hVocabulary))
+        for term,Predict in hPredictiveness.items():
+            hThisTermPre = hTopicTermPreProb[term]
+            for CoverTerm in lNewCover:
+                if CoverTerm in hThisTermPre:
+                    Predict -= hThisTermPre[CoverTerm] / Z
+            hPredictiveness[term] = Predict
         
         return hPredictiveness
     
     def UpdateCovedTerm(self,hPreProb,lCoveredTerm):
-        
+        for term in hPreProb.keys():
+            if not term in lCoveredTerm:
+                    lCoveredTerm.append(term)
         return lCoveredTerm
     
         
     def Process(self):
-        
-        
-        
+        out = open(self.TopicTermOut,'w')
+        for line in open(self.QIn):
+            qid,query = line.strip().split('\t')
+            lTopicTermWeight = self.ProcessOneQ(qid, query)
+            for term,score in lTopicTermWeight:
+                print >>out, qid + '\t' + query +'\t%s\t%f' %(term,score)
+            print '[%s] finished' %(query)
+        out.close()
+            
+        print "finished"
         return
         
         
