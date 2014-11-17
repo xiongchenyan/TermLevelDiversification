@@ -59,11 +59,11 @@ class DSPApproxC(cxBaseC):
         lQTerm = query.split()
         
         for doc in lDoc:
-            lDocTerm = doc.GetContent().split()
+            lDocTerm = doc.GetContent().lower().split()
             lQIndicex = [i for i,term in enumerate(lDocTerm) if term in lQTerm]
             for indice in lQIndicex:
                 lTerm = lDocTerm[max(0,indice-self.UWSize):indice + self.UWSize]
-                lTargetTerm = [term for term in lTerm if term in lTermSet]
+                lTargetTerm = [term for term in lTerm if (term in lTermSet) & (not term in lQTerm)]
                 hTopicTerm.update(dict(zip(lTargetTerm,[0]*len(lTargetTerm))))
                 
         #calc topicality

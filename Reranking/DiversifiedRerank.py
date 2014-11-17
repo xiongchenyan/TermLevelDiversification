@@ -12,6 +12,12 @@ what's my output:
 a new rank of document
 
 '''
+from IndriRelate import IndriInferencer
+
+'''
+Nov 16： add function to read the topic term from disk, and calculate the topic probability
+not tested
+'''
 
 
 import site
@@ -22,6 +28,7 @@ from cxBase.base import cxBaseC
 #from cxBase.Conf import cxConfC
 from IndriRelate.IndriPackedRes import *
 from IndriRelate.IndriInferencer import *
+from IndriRelate.CtfLoader import TermCtfC
 from cxBase.TextBase import TextBaseC
 from cxBase.Vector import VectorC
 # from Reranking.DocTopicDistributionCalculate import DocTopicDistributionCalculatorC
@@ -39,12 +46,16 @@ class DiversifiedRerankC(cxBaseC):
         self.NumOfSt = 0
         self.DocProbNamePre = ""
         self.OutName = ""
+        self.TopicTermIn = ""
+        self.hQTopicTerm = {} #qid->[term,weight]
+        self.Inferencer = LmInferencerC()
+        self.CtfCenter = TermCtfC()
         
         
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print "datadir\nin\nout\ncachedir\ntopdocn\nlambda\ndocprobpre\nlambda"
+        print "datadir\nin\nout\ncachedir\ntopdocn\nlambda\ndocprobpre\nlambda\ntopicterm(ifneed)\nctf"
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
@@ -55,6 +66,37 @@ class DiversifiedRerankC(cxBaseC):
         self.TopDocN = int(self.conf.GetConf('topdocn'))
         self.Lambda = float(self.conf.GetConf('lambda', self.Lambda))
         self.DocProbNamePre = self.conf.GetConf('docprobpre')
+        self.TopicTermIn = self.conf.GetConf('topictermin')
+        if "" != self.TopicTermIn:
+            self.ReadTopicTerm()
+        self.CtfCenter = TermCtfC(self.conf.GetConf('ctf'))
+        
+    
+    def ReadTopicTerm(self):
+        for line in open(self.TopicTermIn):
+            qid,query,term,score = line.strip().split('\t')
+            if not qid in self.hQTopicTerm:
+                self.hQTopicTerm[qid] = []
+            self.hQTopicTerm[qid].append([term,score])
+    
+    def GetDocProb(self,qid,query,lDoc):
+        if {} == self.hQTopicTerm:
+            lDocNo =[doc.DocNo for doc in lDoc]
+            lDocProbVec = self.ReadDocProbVec(lDocNo, qid)
+            return lDocProbVec
+        
+        lTopicTerm = self.hQTopicTerm[qid]
+        lDocProbVec = []
+        for doc in lDoc:
+            lTopicWeight = []
+            Lm = LmBaseC(doc)
+            for term,weight in lTopicTerm:
+                prob = self.Inferencer.InferQuery(query + " " + term, Lm, self.CtfCenter)
+                lTopicWeight.append(prob)
+            Vector = VectorC(lTopicWeight)
+            lDocProbVec.append(Vector)
+        return lDocProbVec
+        
     
     
     def Process(self):
@@ -73,8 +115,7 @@ class DiversifiedRerankC(cxBaseC):
         
     def ProcessOneQ(self,qid,query):
         lDoc = ReadPackedIndriRes(self.CacheDir + query, self.TopDocN)
-        lDocNo = [doc.DocNo for doc in lDoc]        
-        lDocProbVec = self.ReadDocProbVec(lDocNo, qid)        
+        lDocProbVec = self.GetDocProb(qid, lDoc)        
         lReRankedDocNo,lDocScore = self.RerankForOneQ(qid,query,lDoc,lDocProbVec)        
         return lReRankedDocNo,lDocScore
             
