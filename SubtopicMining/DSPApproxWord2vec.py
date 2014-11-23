@@ -79,12 +79,13 @@ class DSPApproxWord2VecC(DSPApproxC):
             pick current best
             update predictiveness and covered terms
         '''
-        
+        print 'start working on [%s][%s]' %(qid,query)
         lTopicTermWeight = []  #(term,weight)
         lCoveredTerm = []
         
         lDoc = ReadPackedIndriRes(self.CacheDir + '/' + query, self.TopDocN)
         hTopicTerm = self.GenerateTopicTerms(qid,query, lDoc)
+        print "candidate topic terms num [%d]" %(len(hTopicTerm))
         hTopicTermPreProb,hPredictiveness,hVocabulary = self.LoadOccurMatrix(qid, query, hTopicTerm)
         lWord2Vec = self.LoadWord2Vec(qid, hVocabulary)
         hTermCenterality = self.CalcCenterality(hTopicTerm, hVocabulary, lWord2Vec)
@@ -107,7 +108,7 @@ class DSPApproxWord2VecC(DSPApproxC):
         BestTerm = ""
         score = 0
         
-        for term,topicality in hTopicTerm:
+        for term,topicality in hTopicTerm.items():
             pred = hPredictiveness[term]
             centerality = hTermCenterality[term]
             ThisScore = topicality * pred * math.pow(centerality,self.CenterWeight)

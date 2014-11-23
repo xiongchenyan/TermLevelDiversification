@@ -159,7 +159,7 @@ class DSPApproxC(cxBaseC):
         BestTerm = ""
         score = 0
         
-        for term,topicality in hTopicTerm:
+        for term,topicality in hTopicTerm.items():
             pred = hPredictiveness[term]
             if topicality * pred > score:
                 score = topicality * pred
