@@ -55,8 +55,14 @@ class DSPApproxWord2VecC(DSPApproxC):
         for term in hTopicTerm.keys():
             Vector = lWord2Vec[hVocabulary[term]]
             centerality = 0
-            for Vb in lWord2Vec:
-                centerality +=  1.0/(Z * VectorC.L2Distance(Vector, Vb))
+            for i in range(len(lWord2Vec)):
+                if i == hVocabulary[term]:
+                    continue
+                Vb = lWord2Vec[i]
+                L2Dis = VectorC.L2Distance(Vector, Vb)
+                if 0 == L2Dis:
+                    continue
+                centerality +=  1.0/(Z * L2Dis)
             hTermCenterality[term] = centerality
         print "centerality calculated"
         return hTermCenterality
@@ -69,7 +75,10 @@ class DSPApproxWord2VecC(DSPApproxC):
             for CoveredTermP in lNewCover:
                 Va = lWord2Vec[hVocabulary[term]]
                 Vb = lWord2Vec[CoveredTermP]
-                centerality -= 1.0/(VectorC.L2Distance(Va,Vb)* Z)
+                L2Dis = VectorC.L2Distance(Va, Vb)
+                if 0 == L2Dis:
+                    continue
+                centerality -= 1.0/(L2Dis* Z)
             hTermCenterality[term] = centerality
         return hTermCenterality
     
