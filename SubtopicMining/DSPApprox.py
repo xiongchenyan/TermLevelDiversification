@@ -103,7 +103,7 @@ class DSPApproxC(cxBaseC):
             q = int(q)
             value = int(value)
             term = lVocabulary[p-1]
-            lVocabulary[q-1] += value
+            lColSum[q-1] += value
             if not term in hTopicTermPreProb:
                 hPred = {q:value}
                 hTopicTermPreProb[term] = hPred
