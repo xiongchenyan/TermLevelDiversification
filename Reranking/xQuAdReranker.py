@@ -43,6 +43,9 @@ class xQuAdRerankerC(DiversifiedRerankC):
         
         while len(lRerankDocNo) < len(lDoc):
             NextP,score = self.SelectNextBest(lDoc,lDocProbVec,lUnsatisfy,lRerankDocNo)
+            if -1 == NextP:
+                print "select next best failed"
+                break
             lRerankDocNo.append(lDoc[NextP].DocNo)
             lDocScore.append(score)
             lUnsatisfy = self.UpdateUnsatisfy(lDocProbVec[NextP],lUnsatisfy)
@@ -51,8 +54,8 @@ class xQuAdRerankerC(DiversifiedRerankC):
     
     
     def SelectNextBest(self,lDoc,lDocProbVec,lUnsatisfy,lRerankDocNo):
-        MaxScore = -1
-        NextP = 0
+        MaxScore = -10000000
+        NextP = -1
         for i in range(len(lDoc)):
             if lDoc[i].DocNo in lRerankDocNo:
                 continue

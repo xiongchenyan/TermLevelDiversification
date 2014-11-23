@@ -95,6 +95,7 @@ class DiversifiedRerankC(cxBaseC):
             Lm = LmBaseC(doc)
             for term,weight in lTopicTerm:
                 prob = self.Inferencer.InferQuery(query + " " + term, Lm, self.CtfCenter)
+                prob = math.exp(prob)
                 lTopicWeight.append(prob)
             Vector = VectorC(lTopicWeight)
             lDocProbVec.append(Vector)
