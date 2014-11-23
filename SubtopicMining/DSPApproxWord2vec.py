@@ -36,17 +36,17 @@ class DSPApproxWord2VecC(DSPApproxC):
         
     def LoadWord2Vec(self,qid,hVocabulary):
         lWord2Vec = []
+        for i in range(len(hVocabulary)):
+            lWord2Vec.append(VectorC()) 
         lLine = open(self.WordDataDir + '/%s_word2vec' %(qid)).read().splitlines()
         lWord2VecTerm = open(self.WordDataDir + '/%s_word2vec_term' %(qid)).read().splitlines()
         hWord2VecTerm = dict(zip(lWord2VecTerm,range(len(lWord2VecTerm))))
-        for term in hVocabulary.keys():
-            Vector = VectorC()
+        for term,p in hVocabulary.items():
             if term in hWord2VecTerm:
                 line = lLine[hWord2VecTerm[term]]
                 print "converting line [%s] for term [%s]" %(line,term)
                 lDim = [float(item) for item in line.split(',')]
-                Vector=VectorC(lDim)
-            lWord2Vec.append(Vector)
+                lWord2Vec[p] = VectorC(lDim)
         return lWord2Vec
     
     def CalcCenterality(self,hTopicTerm,hVocabulary,lWord2Vec):
@@ -63,6 +63,7 @@ class DSPApproxWord2VecC(DSPApproxC):
     
     def UpdateCenterality(self,hPreProb,lCoveredTerm,hTermCenterality,lWord2Vec,hVocabulary):
         lNewCover = [term for term in hPreProb.keys() if not term in lCoveredTerm]
+        print "newly covered term p[%s]" %(json.dumps(lNewCover))
         Z = float(len(hVocabulary))
         for term,centerality in hTermCenterality.items():
             for CoveredTermP in lNewCover:
