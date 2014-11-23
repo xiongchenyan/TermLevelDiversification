@@ -59,7 +59,7 @@ class DSPApproxWord2VecC(DSPApproxC):
                 centerality += VectorC.cosine(Vector, Vb) /Z
             hTermCenterality[term] = centerality
         print "centerality calculated"
-        return
+        return hTermCenterality
     
     def UpdateCenterality(self,hPreProb,lCoveredTerm,hTermCenterality,lWord2Vec,hVocabulary):
         lNewCover = [term for term in hPreProb.keys() if not term in lCoveredTerm]
