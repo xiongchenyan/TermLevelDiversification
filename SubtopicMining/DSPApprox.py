@@ -54,8 +54,8 @@ class DSPApproxC(cxBaseC):
     def GenerateTopicTerms(self,qid,query,lDoc):
         #query need to be stemmed
         hTopicTerm = {}   #term -> topicality
-        lTermSet = open(self.WordDataDir + '%s_term' %(qid)).read().split('\n')
-        
+        lTermSet = open(self.WordDataDir + '%s%s_term' %(qid,self.DataSuf)).read().split('\n')
+        hTermSet = dict(zip(lTermSet,range(len(lTermSet))))
         lQTerm = query.split()
         
         for doc in lDoc:
@@ -63,7 +63,7 @@ class DSPApproxC(cxBaseC):
             lQIndicex = [i for i,term in enumerate(lDocTerm) if term in lQTerm]
             for indice in lQIndicex:
                 lTerm = lDocTerm[max(0,indice-self.UWSize):indice + self.UWSize]
-                lTargetTerm = [term for term in lTerm if (term in lTermSet) & (not term in lQTerm)]
+                lTargetTerm = [term for term in lTerm if (term in hTermSet) & (not term in lQTerm)]
                 hTopicTerm.update(dict(zip(lTargetTerm,[0]*len(lTargetTerm))))
                 
         #calc topicality
@@ -102,16 +102,9 @@ class DSPApproxC(cxBaseC):
             p = int(p)
             q = int(q)
             value = int(value)
-            term = lVocabulary[p-1]
-            lColSum[q-1] += value
-            if not term in hTopicTermPreProb:
-                hPred = {q:value}
-                hTopicTermPreProb[term] = hPred
-            else:
-                if not q in hTopicTermPreProb[term]:
-                    hTopicTermPreProb[term][q] = value
-                else:
-                    hTopicTermPreProb[term][q] += value
+            #the storage only have the upper triangle part of the matrix.
+            self.AddOnePair(p, q, value, lVocabulary, lColSum, hTopicTermPreProb)
+            self.AddOnePair(q, p, value, lVocabulary, lColSum, hTopicTermPreProb)
         
         hPredictiveness = dict(zip(hTopicTermPreProb.keys(),[0]*len(hTopicTermPreProb)))
                     
@@ -123,6 +116,20 @@ class DSPApproxC(cxBaseC):
         hVocabulary = dict(zip(lVocabulary,range(len(lVocabulary))))        
         return hTopicTermPreProb,hPredictiveness,hVocabulary
     
+    
+    
+    def AddOnePair(self,p,q,value,lVocabulary,lColSum,hTopicTermPreProb):
+        term = lVocabulary[p-1]
+        lColSum[q-1] += value
+        if not term in hTopicTermPreProb:
+            hPred = {q:value}
+            hTopicTermPreProb[term] = hPred
+        else:
+            if not q in hTopicTermPreProb[term]:
+                hTopicTermPreProb[term][q] = value
+            else:
+                hTopicTermPreProb[term][q] += value
+        return
     
     def ProcessOneQ(self,qid,query):
         '''
