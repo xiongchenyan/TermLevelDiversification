@@ -78,7 +78,7 @@ class DiversifiedRerankC(cxBaseC):
             qid,query,term,score = line.strip().split('\t')
             if not qid in self.hQTopicTerm:
                 self.hQTopicTerm[qid] = []
-            if len(self.hQTopicTerm[qid] < self.NumOfSt):
+            if len(self.hQTopicTerm[qid]) < self.NumOfSt:
                 self.hQTopicTerm[qid].append([term,score])
     
     def GetDocProb(self,qid,query,lDoc):
