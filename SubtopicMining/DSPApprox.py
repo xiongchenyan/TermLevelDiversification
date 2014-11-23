@@ -205,13 +205,13 @@ class DSPApproxC(cxBaseC):
         return
         
         
-import sys
-
-if 2 != len(sys.argv):
-    DSPApproxC.ShowConf()
-    sys.exit()
-    
-Processor = DSPApproxC(sys.argv[1])
-Processor.Process()
+# import sys
+# 
+# if 2 != len(sys.argv):
+#     DSPApproxC.ShowConf()
+#     sys.exit()
+#     
+# Processor = DSPApproxC(sys.argv[1])
+# Processor.Process()
 
 
