@@ -43,7 +43,7 @@ class DiversifiedRerankC(cxBaseC):
         self.CacheDir = ""
         self.TopDocN = 100
         self.Lambda = 0.15
-        self.NumOfSt = 0
+        self.NumOfSt = 20
         self.DocProbNamePre = ""
         self.OutName = ""
         self.TopicTermIn = ""
@@ -67,6 +67,7 @@ class DiversifiedRerankC(cxBaseC):
         self.Lambda = float(self.conf.GetConf('lambda', self.Lambda))
         self.DocProbNamePre = self.conf.GetConf('docprobpre')
         self.TopicTermIn = self.conf.GetConf('topictermin')
+        self.NumOfSt = int(self.conf.GetConf('numofst', self.NumOfSt))
         if "" != self.TopicTermIn:
             self.ReadTopicTerm()
         self.CtfCenter = TermCtfC(self.conf.GetConf('ctf'))
@@ -77,7 +78,8 @@ class DiversifiedRerankC(cxBaseC):
             qid,query,term,score = line.strip().split('\t')
             if not qid in self.hQTopicTerm:
                 self.hQTopicTerm[qid] = []
-            self.hQTopicTerm[qid].append([term,score])
+            if len(self.hQTopicTerm[qid] < self.NumOfSt):
+                self.hQTopicTerm[qid].append([term,score])
     
     def GetDocProb(self,qid,query,lDoc):
         if {} == self.hQTopicTerm:
