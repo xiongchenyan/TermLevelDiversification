@@ -56,7 +56,7 @@ class DSPApproxWord2VecC(DSPApproxC):
             Vector = lWord2Vec[hVocabulary[term]]
             centerality = 0
             for Vb in lWord2Vec:
-                centerality += VectorC.cosine(Vector, Vb) /Z
+                centerality +=  1.0/(Z * VectorC.L2Distance(Vector, Vb))
             hTermCenterality[term] = centerality
         print "centerality calculated"
         return hTermCenterality
@@ -69,7 +69,7 @@ class DSPApproxWord2VecC(DSPApproxC):
             for CoveredTermP in lNewCover:
                 Va = lWord2Vec[hVocabulary[term]]
                 Vb = lWord2Vec[CoveredTermP]
-                centerality -= VectorC.cosine(Va,Vb) / Z
+                centerality -= 1.0/(VectorC.L2Distance(Va,Vb)* Z)
             hTermCenterality[term] = centerality
         return hTermCenterality
     
@@ -94,6 +94,9 @@ class DSPApproxWord2VecC(DSPApproxC):
         
         while hTopicTerm != {}:
             BestTerm,score = self.CalcCurrentBest(hTopicTerm, hPredictiveness,hTermCenterality)
+            if "" == BestTerm:
+                print "no more positive topic term found, break"
+                break
             lTopicTermWeight.append([BestTerm,score])
             del hTopicTerm[BestTerm]
             hPreProb = hTopicTermPreProb[BestTerm]
@@ -113,6 +116,8 @@ class DSPApproxWord2VecC(DSPApproxC):
         for term,topicality in hTopicTerm.items():
             pred = hPredictiveness[term]
             centerality = hTermCenterality[term]
+            if (pred < 0) | (topicality < 0):
+                continue
             ThisScore = topicality * pred * math.pow(centerality,self.CenterWeight)
             if ThisScore > score:
                 score = ThisScore
