@@ -65,9 +65,9 @@ class DSPApproxWord2VecC(DSPApproxC):
         lNewCover = [term for term in hPreProb.keys() if not term in lCoveredTerm]
         Z = float(len(hVocabulary))
         for term,centerality in hTermCenterality.items():
-            for CoveredTerm in lNewCover:
+            for CoveredTermP in lNewCover:
                 Va = lWord2Vec[hVocabulary[term]]
-                Vb = lWord2Vec[hVocabulary[CoveredTerm]]
+                Vb = lWord2Vec[CoveredTermP]
                 centerality -= VectorC.cosine(Va,Vb) / Z
             hTermCenterality[term] = centerality
         return hTermCenterality
