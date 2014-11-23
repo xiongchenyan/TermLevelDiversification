@@ -86,7 +86,8 @@ class DiversifiedRerankC(cxBaseC):
             lDocNo =[doc.DocNo for doc in lDoc]
             lDocProbVec = self.ReadDocProbVec(lDocNo, qid)
             return lDocProbVec
-        
+        if not qid in self.hQTopicTerm:
+            return []
         lTopicTerm = self.hQTopicTerm[qid]
         lDocProbVec = []
         for doc in lDoc:
