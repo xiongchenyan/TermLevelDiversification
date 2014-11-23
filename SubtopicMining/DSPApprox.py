@@ -76,7 +76,7 @@ class DSPApproxC(cxBaseC):
         #replace with KL
         for term,value in hTopicTerm.items():
             ctf = self.CtfCenter.GetCtfProb(term)
-            hTopicTerm[term] = value * math.log(value / ctf)
+            hTopicTerm[term] = value * math.log(value / ctf,2)
         
         return hTopicTerm
     
@@ -151,6 +151,9 @@ class DSPApproxC(cxBaseC):
         
         while hTopicTerm != {}:
             BestTerm,score = self.CalcCurrentBest(hTopicTerm, hPredictiveness)
+            if "" == BestTerm:
+                print "no more positive topic term found, break"
+                break
             lTopicTermWeight.append([BestTerm,score])
             del hTopicTerm[BestTerm]
             hPreProb = hTopicTermPreProb[BestTerm]
@@ -169,11 +172,12 @@ class DSPApproxC(cxBaseC):
         for term,topicality in hTopicTerm.items():
             pred = hPredictiveness[term]
             print "term [%s] pred [%f] topic [%f] score [%f] current best [%f]" %(term,pred,topicality,pred*topicality,score)
+            if (pred < 0) | (topicality < 0):
+                continue
             if topicality * pred > score:
                 score = topicality * pred
                 BestTerm = term
                 print "bestterm [%s][%f]" %(BestTerm,score)
-        
         return BestTerm,score
     
     def UpdatePredictiveness(self,hPreProb,lCoveredTerm,hPredictiveness,hTopicTermPreProb,hVocabulary):
