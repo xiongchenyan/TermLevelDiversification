@@ -132,13 +132,14 @@ class DSPApproxC(cxBaseC):
             pick current best
             update predictiveness and covered terms
         '''
-        
+        print 'start working on [%s][%s]' %(qid,query)
         lTopicTermWeight = []  #(term,weight)
         lCoveredTerm = []
         
         lDoc = ReadPackedIndriRes(self.CacheDir + '/' + query, self.TopDocN)
-        
+        print "read [%d] docs" %(len(lDoc))
         hTopicTerm = self.GenerateTopicTerms(qid,query, lDoc)
+        print "candidate topic terms num [%d]" %(len(hTopicTerm))
         hTopicTermPreProb,hPredictiveness,hVocabularty = self.LoadOccurMatrix(qid, query, hTopicTerm)
         
         while hTopicTerm != {}:
@@ -148,7 +149,7 @@ class DSPApproxC(cxBaseC):
             hPreProb = hTopicTermPreProb[BestTerm]
             hPredictiveness = self.UpdatePredictiveness(hPreProb, lCoveredTerm, hPredictiveness, hTopicTermPreProb,hVocabularty)
             lCoveredTerm = self.UpdateCovedTerm(hPreProb, lCoveredTerm)
-            print "current best [%s][%f]" %(BestTerm,score)
+            print "current best term [%s][%f]" %(BestTerm,score)
         
         return lTopicTermWeight
     
@@ -204,5 +205,13 @@ class DSPApproxC(cxBaseC):
         return
         
         
+import sys
+
+if 2 != len(sys.argv):
+    DSPApproxC.ShowConf()
+    sys.exit()
+    
+Processor = DSPApproxC(sys.argv[1])
+Processor.Process()
 
 
