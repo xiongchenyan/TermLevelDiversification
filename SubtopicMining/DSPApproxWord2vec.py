@@ -43,6 +43,7 @@ class DSPApproxWord2VecC(DSPApproxC):
             Vector = VectorC()
             if term in hWord2VecTerm:
                 line = lLine[hWord2VecTerm[term]]
+                print "converting line [%s] for term [%s]" %(line,term)
                 lDim = [float(item) for item in line.split(',')]
                 Vector=VectorC(lDim)
             lWord2Vec.append(Vector)
