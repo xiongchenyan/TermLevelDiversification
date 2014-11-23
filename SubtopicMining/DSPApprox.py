@@ -38,7 +38,7 @@ class DSPApproxC(cxBaseC):
         self.UWSize = int(self.conf.GetConf('uwsize', self.UWSize))
         self.TopDocN = int(self.conf.GetConf('topdocn', self.TopDocN))
         self.CacheDir = self.conf.GetConf('cachedir')
-        self.CtfCenter.load(self.conf.GetConf('ctf'))
+        self.CtfCenter.Load(self.conf.GetConf('ctf'))
         self.WordDataDir = self.conf.GetConf('worddatadir') + '/'
         self.QIn = self.conf.GetConf('in')
         self.TopicTermOut = self.conf.GetConf('out')
