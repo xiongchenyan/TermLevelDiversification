@@ -117,7 +117,7 @@ class DiversifiedRerankC(cxBaseC):
         
     def ProcessOneQ(self,qid,query):
         lDoc = ReadPackedIndriRes(self.CacheDir + query, self.TopDocN)
-        lDocProbVec = self.GetDocProb(qid, lDoc)        
+        lDocProbVec = self.GetDocProb(qid,query,lDoc)        
         lReRankedDocNo,lDocScore = self.RerankForOneQ(qid,query,lDoc,lDocProbVec)        
         return lReRankedDocNo,lDocScore
             
