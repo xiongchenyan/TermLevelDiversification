@@ -210,7 +210,7 @@ class DSPApproxC(cxBaseC):
             qid,query = line.strip().split('\t')
             lTopicTermWeight = self.ProcessOneQ(qid, query)
             for term,score in lTopicTermWeight:
-                print >>out, qid + '\t' + query +'\t%s\t%f' %(term,score)
+                print >>out, qid + '\t' + query +'\t%s\t%f' %(term,math.log(score))
             print '[%s] finished' %(query)
         out.close()
             
