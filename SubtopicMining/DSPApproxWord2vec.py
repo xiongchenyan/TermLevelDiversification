@@ -42,8 +42,8 @@ class DSPApproxWord2VecC(DSPApproxC):
         for term in hVocabulary.keys():
             Vector = VectorC()
             if term in hWord2VecTerm:
-                line = lLine(hWord2VecTerm[term])
-                lDim = line.split(',')
+                line = lLine[hWord2VecTerm[term]]
+                lDim = [float(item) for item in line.split(',')]
                 Vector=VectorC(lDim)
             lWord2Vec.append(Vector)
         return lWord2Vec
