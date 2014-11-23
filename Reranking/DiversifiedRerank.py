@@ -105,11 +105,11 @@ class DiversifiedRerankC(cxBaseC):
         out = open(self.OutName,'w')
         for line in open(self.QIn):
             qid,query = line.strip().split('\t')
-            qid = int(qid)
+#             qid = int(qid)
             lDocNo,lDocScore = self.ProcessOneQ(qid, query)
             for i in range(len(lDocNo)):
-                print >> out,"%d Q0 %s %d %f div" %(qid,lDocNo[i],i + 1,lDocScore[i])
-            print "[%d][%s] ranked" %(qid,query)
+                print >> out,"%s Q0 %s %d %f div" %(qid,lDocNo[i],i + 1,lDocScore[i])
+            print "[%s][%s] ranked" %(qid,query)
         out.close()     
         return
     
@@ -123,7 +123,7 @@ class DiversifiedRerankC(cxBaseC):
             
     def ReadDocProbVec(self,lDocNo,qid):
         lDocProbVec = [VectorC()] * len(lDocNo)
-        for line in open(self.DataDir + '%d_%s_DocTopicProb' %(qid,self.DocProbNamePre)):
+        for line in open(self.DataDir + '%s_%s_DocTopicProb' %(qid,self.DocProbNamePre)):
             DocNo,VecStr = line.strip().split('\t')
             Vector = VectorC()
             Vector.loads(VecStr)
