@@ -54,7 +54,7 @@ class DSPApproxC(cxBaseC):
     def GenerateTopicTerms(self,qid,query,lDoc):
         #query need to be stemmed
         hTopicTerm = {}   #term -> topicality
-        lTermSet = open(self.WordDataDir + '%s%s_term' %(qid,self.DataSuf)).read().split('\n')
+        lTermSet = open(self.WordDataDir + '%s%s_term' %(qid,self.DataSuf)).read().splitlines()
         hTermSet = dict(zip(lTermSet,range(len(lTermSet))))
         lQTerm = query.split()
         
@@ -64,6 +64,7 @@ class DSPApproxC(cxBaseC):
             for indice in lQIndicex:
                 lTerm = lDocTerm[max(0,indice-self.UWSize):indice + self.UWSize]
                 lTargetTerm = [term for term in lTerm if (term in hTermSet) & (not term in lQTerm)]
+                lTargetTerm = self.FilterTopicTerm(lTargetTerm)
                 hTopicTerm.update(dict(zip(lTargetTerm,[0]*len(lTargetTerm))))
                 
         #calc topicality
@@ -79,7 +80,21 @@ class DSPApproxC(cxBaseC):
             hTopicTerm[term] = value * math.log(value / ctf,2)
         
         return hTopicTerm
-    
+
+    def FilterTopicTerm(self,lTerm):
+        lRes = []
+        lStop=['www','http','com','net']
+        hStop = dict(zip(lStop,range(len(lStop))))
+        for term in lTerm:
+            if len(term) < 3:
+                continue
+            if TextBaseC.DiscardNonAlpha(term) == "":
+                continue
+            if term in hStop:
+                continue
+            lRes.append(term)
+        return lRes
+            
     
     def LoadOccurMatrix(self,qid,query,hTopicTerm):
         hTopicTermPreProb = {}   #topic term -> hPred[term]->p(t|v)
@@ -95,7 +110,7 @@ class DSPApproxC(cxBaseC):
         TermInName = self.WordDataDir + '%s%s_term' %(qid,self.DataSuf)
         CoocInName = self.WordDataDir + '%s%s_occur' %(qid,self.DataSuf)
         
-        lVocabulary = open(TermInName).read().split('\n')
+        lVocabulary = open(TermInName).read().splitlines()
         lColSum = [0] * len(lVocabulary)
         for line in open(CoocInName):
             p,q,value = line.strip().split(',')

@@ -36,8 +36,8 @@ class DSPApproxWord2VecC(DSPApproxC):
         
     def LoadWord2Vec(self,qid,hVocabulary):
         lWord2Vec = []
-        lLine = open(self.WordDataDir + '/%s_word2vec' %(qid)).read().split('\n')
-        lWord2VecTerm = open(self.WordDataDir + '/%s_word2vec_term' %(qid)).read().split('\n')
+        lLine = open(self.WordDataDir + '/%s_word2vec' %(qid)).read().splitlines()
+        lWord2VecTerm = open(self.WordDataDir + '/%s_word2vec_term' %(qid)).read().splitlines()
         hWord2VecTerm = dict(zip(lWord2VecTerm,range(len(lWord2VecTerm))))
         for term in hVocabulary.keys():
             Vector = VectorC()
