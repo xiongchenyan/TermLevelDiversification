@@ -159,7 +159,7 @@ class DSPApproxC(cxBaseC):
             hPreProb = hTopicTermPreProb[BestTerm]
             hPredictiveness = self.UpdatePredictiveness(hPreProb, lCoveredTerm, hPredictiveness, hTopicTermPreProb,hVocabularty)
             lCoveredTerm = self.UpdateCovedTerm(hPreProb, lCoveredTerm)
-            print "current best term [%s][%f]" %(BestTerm,score)
+            print "current best term [%s][%f]" %(BestTerm,math.log(score))
         
         return lTopicTermWeight
     
