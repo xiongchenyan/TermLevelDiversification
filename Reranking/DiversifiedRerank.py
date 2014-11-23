@@ -15,7 +15,7 @@ a new rank of document
 from IndriRelate import IndriInferencer
 
 '''
-Nov 16： add function to read the topic term from disk, and calculate the topic probability
+Nov 16 add function to read the topic term from disk, and calculate the topic probability
 not tested
 '''
 
