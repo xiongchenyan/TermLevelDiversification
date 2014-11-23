@@ -35,7 +35,7 @@ class PM2RerankerC(DiversifiedRerankC):
             lRerankDocNo = [doc.DocNo for doc in lDoc]
             lDocScore = [doc.score for doc in lDoc]
             return lRerankDocNo,lDocScore        
-        self.NumOfSt = min(len(lDocProbVec[0].hDim),self.NumOfSt)
+#         self.NumOfSt = min(len(lDocProbVec[0].hDim),self.NumOfSt)
         lUnsatisfy = [1.0 / self.NumOfSt] * self.NumOfSt
         
         while len(lRerankDocNo) < len(lDoc):

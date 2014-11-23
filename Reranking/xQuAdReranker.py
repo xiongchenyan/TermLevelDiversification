@@ -36,7 +36,9 @@ class xQuAdRerankerC(DiversifiedRerankC):
             lDocScore = [doc.score for doc in lDoc]
             return lRerankDocNo,lDocScore
         
-        self.NumOfSt = min(len(lDocProbVec[0].hDim),self.NumOfSt)
+#         self.NumOfSt = min(len(lDocProbVec[0].hDim),self.NumOfSt)
+        NumOfSt = len(lDocProbVec[0].hDim)
+        print '[%s][%s] have [%d] st' %(qid,query,NumOfSt)
         lUnsatisfy = [1.0 / self.NumOfSt] * self.NumOfSt
         
         while len(lRerankDocNo) < len(lDoc):
