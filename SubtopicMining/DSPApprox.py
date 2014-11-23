@@ -114,8 +114,8 @@ class DSPApproxC(cxBaseC):
         lColSum = [0] * len(lVocabulary)
         for line in open(CoocInName):
             p,q,value = line.strip().split(',')
-            p = int(p)
-            q = int(q)
+            p = int(p) - 1
+            q = int(q) - 1
             value = int(value)
             #the storage only have the upper triangle part of the matrix.
             self.AddOnePair(p, q, value, lVocabulary, lColSum, hTopicTermPreProb)
@@ -134,8 +134,8 @@ class DSPApproxC(cxBaseC):
     
     
     def AddOnePair(self,p,q,value,lVocabulary,lColSum,hTopicTermPreProb):
-        term = lVocabulary[p-1]
-        lColSum[q-1] += value
+        term = lVocabulary[p]
+        lColSum[q] += value
         if not term in hTopicTermPreProb:
             hPred = {q:value}
             hTopicTermPreProb[term] = hPred
