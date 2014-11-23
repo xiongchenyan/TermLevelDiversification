@@ -165,12 +165,14 @@ class DSPApproxC(cxBaseC):
     def CalcCurrentBest(self,hTopicTerm,hPredictiveness):
         BestTerm = ""
         score = 0
-        
+        print "start calculating current best term:"
         for term,topicality in hTopicTerm.items():
             pred = hPredictiveness[term]
+            print "term [%s] pred [%f] topic [%f] score [%f] current best [%f]" %(term,pred,topicality,pred*topicality,score)
             if topicality * pred > score:
                 score = topicality * pred
                 BestTerm = term
+                print "bestterm [%s][%f]" %(BestTerm,score)
         
         return BestTerm,score
     
