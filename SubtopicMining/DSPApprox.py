@@ -92,8 +92,8 @@ class DSPApproxC(cxBaseC):
             (normalize by column) (row indices use term, column just ids)
         for each topic term, sum it up (normalized with vocabulary size)
         '''
-        TermInName = self.WordDataDir + '%d%s_term' %(self.DataSuf,qid)
-        CoocInName = self.WordDataDir + '%d%s_occur' %(self.DataSuf,qid)
+        TermInName = self.WordDataDir + '%d%s_term' %(qid,self.DataSuf)
+        CoocInName = self.WordDataDir + '%d%s_occur' %(qid,self.DataSuf)
         
         lVocabulary = open(TermInName).read().split('\n')
         lColSum = [0] * len(lVocabulary)
