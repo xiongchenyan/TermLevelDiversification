@@ -51,31 +51,33 @@ class DSPApproxWord2VecC(DSPApproxC):
     
     def CalcCenterality(self,hTopicTerm,hVocabulary,lWord2Vec):
         hTermCenterality = {} #term -> 1/Z \sum distance with vocabulary
+        hTermL2Dis = {}   #term ->[L2 dis with all vocabulary]
         Z = float(len(hVocabulary))
         for term in hTopicTerm.keys():
             Vector = lWord2Vec[hVocabulary[term]]
+            hTermL2Dis[term] = []
             centerality = 0
             for i in range(len(lWord2Vec)):
                 if i == hVocabulary[term]:
+                    hTermL2Dis[term].append(0)
                     continue
                 Vb = lWord2Vec[i]
                 L2Dis = VectorC.L2Distance(Vector, Vb)
+                hTermL2Dis[term].append(L2Dis)
                 if 0 == L2Dis:
                     continue
                 centerality +=  1.0/(Z * L2Dis)
             hTermCenterality[term] = centerality
         print "centerality calculated"
-        return hTermCenterality
+        return hTermCenterality,hTermL2Dis
     
-    def UpdateCenterality(self,hPreProb,lCoveredTerm,hTermCenterality,lWord2Vec,hVocabulary):
+    def UpdateCenterality(self,hPreProb,lCoveredTerm,hTermCenterality,hTermL2Dis,lWord2Vec,hVocabulary):
         lNewCover = [term for term in hPreProb.keys() if not term in lCoveredTerm]
 #         print "newly covered term p[%s]" %(json.dumps(lNewCover))
         Z = float(len(hVocabulary))
         for term,centerality in hTermCenterality.items():
             for CoveredTermP in lNewCover:
-                Va = lWord2Vec[hVocabulary[term]]
-                Vb = lWord2Vec[CoveredTermP]
-                L2Dis = VectorC.L2Distance(Va, Vb)
+                L2Dis = hTermL2Dis[term][CoveredTermP]
                 if 0 == L2Dis:
                     continue
                 centerality -= 1.0/(L2Dis* Z)
@@ -99,7 +101,7 @@ class DSPApproxWord2VecC(DSPApproxC):
         print "candidate topic terms num [%d]" %(len(hTopicTerm))
         hTopicTermPreProb,hPredictiveness,hVocabulary = self.LoadOccurMatrix(qid, query, hTopicTerm)
         lWord2Vec = self.LoadWord2Vec(qid, hVocabulary)
-        hTermCenterality = self.CalcCenterality(hTopicTerm, hVocabulary, lWord2Vec)
+        hTermCenterality,hTermL2Dis = self.CalcCenterality(hTopicTerm, hVocabulary, lWord2Vec)
         
         while hTopicTerm != {}:
             BestTerm,score = self.CalcCurrentBest(hTopicTerm, hPredictiveness,hTermCenterality)
@@ -110,7 +112,7 @@ class DSPApproxWord2VecC(DSPApproxC):
             del hTopicTerm[BestTerm]
             hPreProb = hTopicTermPreProb[BestTerm]
             hPredictiveness = self.UpdatePredictiveness(hPreProb, lCoveredTerm, hPredictiveness, hTopicTermPreProb,hVocabulary)
-            hTermCenterality = self.UpdateCenterality(hPreProb, lCoveredTerm, hTermCenterality, lWord2Vec, hVocabulary)
+            hTermCenterality = self.UpdateCenterality(hPreProb, lCoveredTerm, hTermCenterality, hTermL2Dis,lWord2Vec, hVocabulary)
             lCoveredTerm = self.UpdateCovedTerm(hPreProb, lCoveredTerm)
             print "current best [%s][%f]" %(BestTerm,math.log(score))
         
