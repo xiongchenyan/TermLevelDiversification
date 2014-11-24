@@ -23,7 +23,7 @@ class FilterWord2VecC(cxBaseC):
     def Init(self):
         self.DataDir = ""
         self.TopicTermIn = ""
-        self.OutSuf = '_filter'
+        self.OutSuf = '_topicterm'
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)

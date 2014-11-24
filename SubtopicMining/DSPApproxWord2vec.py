@@ -44,7 +44,7 @@ class DSPApproxWord2VecC(DSPApproxC):
         for term,p in hVocabulary.items():
             if term in hWord2VecTerm:
                 line = lLine[hWord2VecTerm[term]]
-                print "converting line [%s] for term [%s]" %(line,term)
+#                 print "converting line [%s] for term [%s]" %(line,term)
                 lDim = [float(item) for item in line.split(',')]
                 lWord2Vec[p] = VectorC(lDim)
         return lWord2Vec
@@ -69,7 +69,7 @@ class DSPApproxWord2VecC(DSPApproxC):
     
     def UpdateCenterality(self,hPreProb,lCoveredTerm,hTermCenterality,lWord2Vec,hVocabulary):
         lNewCover = [term for term in hPreProb.keys() if not term in lCoveredTerm]
-        print "newly covered term p[%s]" %(json.dumps(lNewCover))
+#         print "newly covered term p[%s]" %(json.dumps(lNewCover))
         Z = float(len(hVocabulary))
         for term,centerality in hTermCenterality.items():
             for CoveredTermP in lNewCover:
