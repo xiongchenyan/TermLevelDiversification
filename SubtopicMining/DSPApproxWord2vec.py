@@ -31,7 +31,10 @@ class DSPApproxWord2VecC(DSPApproxC):
     def Init(self):
         DSPApproxC.Init(self)
         self.CenterWeight = 10.0
-        
+    
+    def SetConf(self, ConfIn):
+        DSPApproxC.SetConf(self, ConfIn)    
+        self.CenterWeight = float(self.conf.GetConf('centerweight', self.CenterWeight))
         
     def LoadWord2Vec(self,qid,hVocabulary):
         lWord2Vec = []
