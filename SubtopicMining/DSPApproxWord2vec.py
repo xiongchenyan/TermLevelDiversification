@@ -53,6 +53,9 @@ class DSPApproxWord2VecC(DSPApproxC):
         hTermCenterality = {} #term -> 1/Z \sum distance with vocabulary
         hTermL2Dis = {}   #term ->[L2 dis with all vocabulary]
         Z = float(len(hVocabulary))
+        lVocabulary = hVocabulary.items()
+        lVocabulary.sort(key=lambda item:int(item[1]))
+        lVocabulary =[item[0] for item in lVocabulary]
         for term in hTopicTerm.keys():
             Vector = lWord2Vec[hVocabulary[term]]
             hTermL2Dis[term] = []
@@ -63,6 +66,7 @@ class DSPApproxWord2VecC(DSPApproxC):
                     continue
                 Vb = lWord2Vec[i]
                 L2Dis = VectorC.L2Distance(Vector, Vb)
+                print "L2[%s]-[%s]: [%f]" %(term,lVocabulary[i],L2Dis)
                 hTermL2Dis[term].append(L2Dis)
                 if 0 == L2Dis:
                     continue
