@@ -67,6 +67,8 @@ class DSPApproxWord2VecC(DSPApproxC):
                 Vb = lWord2Vec[i]
                 L2Dis = VectorC.L2Distance(Vector, Vb)
                 print "L2[%s]-[%s]: [%f]" %(term,lVocabulary[i],L2Dis)
+                print json.dumps(Vector.hDim)
+                print json.dumps(Vb.hDim)
                 hTermL2Dis[term].append(L2Dis)
                 if 0 == L2Dis:
                     continue
