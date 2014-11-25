@@ -129,7 +129,7 @@ class DSPApproxWord2VecC(DSPApproxC):
             hPredictiveness = self.UpdatePredictiveness(hPreProb, lCoveredTerm, hPredictiveness, hTopicTermPreProb,hVocabulary)
             hTermCenterality = self.UpdateCenterality(hPreProb, lCoveredTerm, hTermCenterality, hTermL2Dis,lWord2Vec, hVocabulary)
             lCoveredTerm = self.UpdateCovedTerm(hPreProb, lCoveredTerm)
-            print "current best [%s][%f]" %(BestTerm,math.log(score))
+            print "current best [%s][%f]" %(BestTerm,score)
         
         return lTopicTermWeight
     
@@ -137,15 +137,17 @@ class DSPApproxWord2VecC(DSPApproxC):
     
     def CalcCurrentBest(self,hTopicTerm,hPredictiveness,hTermCenterality):
         BestTerm = ""
-        score = 0
+        score = ""
         
         for term,topicality in hTopicTerm.items():
             pred = hPredictiveness[term]
             centerality = hTermCenterality[term]
             if (pred < 0) | (topicality < 0):
                 continue
-            WeightedCenterality = math.pow(centerality,self.CenterWeight)
-            ThisScore = topicality * pred *  WeightedCenterality
+            WeightedCenterality = math.log(centerality) * self.CenterWeight
+            ThisScore = math.log(topicality) + math.log(pred) +  WeightedCenterality
+            if score == "":
+                score = ThisScore
             if ThisScore > score:
                 score = ThisScore
                 BestTerm = term

@@ -193,7 +193,7 @@ class DSPApproxC(cxBaseC):
                 score = topicality * pred
                 BestTerm = term
                 print "bestterm [%s][%f]" %(BestTerm,score)
-        return BestTerm,score
+        return BestTerm,math.log(score)
     
     def UpdatePredictiveness(self,hPreProb,lCoveredTerm,hPredictiveness,hTopicTermPreProb,hVocabulary):
         '''
@@ -225,7 +225,7 @@ class DSPApproxC(cxBaseC):
             qid,query = line.strip().split('\t')
             lTopicTermWeight = self.ProcessOneQ(qid, query)
             for term,score in lTopicTermWeight:
-                print >>out, qid + '\t' + query +'\t%s\t%f' %(term,math.log(score))
+                print >>out, qid + '\t' + query +'\t%s\t%f' %(term,score)
             print '[%s] finished' %(query)
         out.close()
             
