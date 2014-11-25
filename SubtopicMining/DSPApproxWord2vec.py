@@ -57,25 +57,26 @@ class DSPApproxWord2VecC(DSPApproxC):
         lVocabulary.sort(key=lambda item:int(item[1]))
         lVocabulary =[item[0] for item in lVocabulary]
         for term in hTopicTerm.keys():
-            Vector = lWord2Vec[hVocabulary[term]]
+            Vector = lWord2Vec[hVocabulary[term]]            
             hTermL2Dis[term] = []
             centerality = 0
-            for i in range(len(lWord2Vec)):
-                if i == hVocabulary[term]:
-                    hTermL2Dis[term].append(0)
-                    continue
-                Vb = lWord2Vec[i]
-                if Vb.hDim == {}:
-                    hTermL2Dis[term].append(0)
-                    continue
-                L2Dis = VectorC.L2Distance(Vector, Vb)
-#                 print "L2[%s]-[%s]: [%f]" %(term,lVocabulary[i],L2Dis)
-#                 print json.dumps(Vector.hDim)
-#                 print json.dumps(Vb.hDim)
-                hTermL2Dis[term].append(L2Dis)
-                if 0 == L2Dis:
-                    continue
-                centerality +=  1.0/(Z * L2Dis)
+            if not Vector.IsEmpty():                
+                for i in range(len(lWord2Vec)):
+                    if i == hVocabulary[term]:
+                        hTermL2Dis[term].append(0)
+                        continue
+                    Vb = lWord2Vec[i]
+                    if Vb.hDim == {}:
+                        hTermL2Dis[term].append(0)
+                        continue
+                    L2Dis = VectorC.L2Distance(Vector, Vb)
+    #                 print "L2[%s]-[%s]: [%f]" %(term,lVocabulary[i],L2Dis)
+    #                 print json.dumps(Vector.hDim)
+    #                 print json.dumps(Vb.hDim)
+                    hTermL2Dis[term].append(L2Dis)
+                    if 0 == L2Dis:
+                        continue
+                    centerality +=  1.0/(Z * L2Dis)
             hTermCenterality[term] = centerality
             print "term [%s] centerality [%f]" %(term,centerality)
         print "centerality calculated"
@@ -86,6 +87,8 @@ class DSPApproxWord2VecC(DSPApproxC):
 #         print "newly covered term p[%s]" %(json.dumps(lNewCover))
         Z = float(len(hVocabulary))
         for term,centerality in hTermCenterality.items():
+            if centerality <= 0:
+                continue
             for CoveredTermP in lNewCover:
                 L2Dis = hTermL2Dis[term][CoveredTermP]
                 if 0 == L2Dis:
