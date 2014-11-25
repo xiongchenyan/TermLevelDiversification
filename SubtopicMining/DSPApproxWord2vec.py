@@ -26,12 +26,11 @@ from IndriRelate.CtfLoader import TermCtfC
 from cxBase.Vector import VectorC
 from DSPApprox import DSPApproxC
 
-
 class DSPApproxWord2VecC(DSPApproxC):
     
     def Init(self):
         DSPApproxC.Init(self)
-        self.CenterWeight = 1.0
+        self.CenterWeight = 10.0
         
         
     def LoadWord2Vec(self,qid,hVocabulary):
@@ -147,7 +146,7 @@ class DSPApproxWord2VecC(DSPApproxC):
             if ThisScore > score:
                 score = ThisScore
                 BestTerm = term
-                print "get better term [%s][%f,%f,%f][%f]" %(term,topicality,pred,WeightedCenterality,ThisScore)
+                print "get better term [%s][%f,%f,%f][%f]" %(term,math.log(topicality),math.log(pred),math.log(WeightedCenterality),math.log(ThisScore))
         
         return BestTerm,score
                 
