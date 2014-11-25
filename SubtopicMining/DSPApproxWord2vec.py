@@ -68,6 +68,7 @@ class DSPApproxWord2VecC(DSPApproxC):
                     continue
                 centerality +=  1.0/(Z * L2Dis)
             hTermCenterality[term] = centerality
+            print "term [%s] centerality [%f]" %(term,centerality)
         print "centerality calculated"
         return hTermCenterality,hTermL2Dis
     
