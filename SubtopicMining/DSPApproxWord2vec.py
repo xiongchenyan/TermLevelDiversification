@@ -65,8 +65,11 @@ class DSPApproxWord2VecC(DSPApproxC):
                     hTermL2Dis[term].append(0)
                     continue
                 Vb = lWord2Vec[i]
+                if Vb.hDim == {}:
+                    hTermL2Dis[term].append(0)
+                    continue
                 L2Dis = VectorC.L2Distance(Vector, Vb)
-                print "L2[%s]-[%s]: [%f]" %(term,lVocabulary[i],L2Dis)
+#                 print "L2[%s]-[%s]: [%f]" %(term,lVocabulary[i],L2Dis)
                 print json.dumps(Vector.hDim)
                 print json.dumps(Vb.hDim)
                 hTermL2Dis[term].append(L2Dis)
@@ -136,10 +139,12 @@ class DSPApproxWord2VecC(DSPApproxC):
             centerality = hTermCenterality[term]
             if (pred < 0) | (topicality < 0):
                 continue
-            ThisScore = topicality * pred * math.pow(centerality,self.CenterWeight)
+            WeightedCenterality = math.pow(centerality,self.CenterWeight)
+            ThisScore = topicality * pred *  WeightedCenterality
             if ThisScore > score:
                 score = ThisScore
                 BestTerm = term
+                print "get better term [%s][%f,%f,%f][%f]" %(term,topicality,pred,WeightedCenterality,ThisScore)
         
         return BestTerm,score
                 
